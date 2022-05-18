@@ -9,9 +9,22 @@ class RichTextController extends ChangeNotifier {
   String text;
   TextSelection textSelection = const TextSelection.collapsed(offset: 0);
 
-  void updateText(String newText) {
-    text = newText;
-    notifyListeners();
+  void bold() {
+    String split = "[@split]->";
+    String bold = "[@font-weight:6]->";
+    if (!textSelection.isCollapsed) {
+      bool isStyled = text[textSelection.baseOffset - 2] == "]->";
+
+      final String newText = text.replaceRange(
+          textSelection.baseOffset,
+          textSelection.extentOffset,
+          isStyled
+              ? "$bold${text.substring(textSelection.baseOffset, textSelection.extentOffset)}$split"
+              : "$split$bold${text.substring(textSelection.baseOffset, textSelection.extentOffset)}$split");
+
+      text = newText;
+      notifyListeners();
+    }
   }
 
   void updateTextSelection(TextSelection newTextSelection) {
@@ -46,8 +59,9 @@ class RichTextState extends State<RichTextEditor> {
         child: SelectableText.rich(
           widget.controller.text.span,
           cursorColor: Colors.red,
-          onSelectionChanged: (selection, cause) =>
-              print("selection : $selection, cause : $cause"),
+          onSelectionChanged: (selection, cause) => setState(() {
+            widget.controller.updateTextSelection(selection);
+          }),
         ));
   }
 }
@@ -60,7 +74,7 @@ class RichTextToolbar extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialButton(
       onPressed: () {
-        controller.updateText("Colors.blue");
+        controller.bold();
       },
       child: const Icon(
         Icons.format_bold,
