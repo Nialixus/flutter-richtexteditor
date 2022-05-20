@@ -12,13 +12,27 @@ class RichTextController extends ChangeNotifier {
       int start = textSelection.baseOffset;
       int end = textSelection.extentOffset;
 
-      if (text.substring(0, end).contains("<")) {
-        RegExp regex = RegExp(r'<style=".*?">');
-        if (regex.hasMatch(text)) {
-          String newText = regex.stringMatch(text)!;
-          print(text.substring(start + newText.length, end + newText.length));
-        }
+      List<RichTextSelection> codeSelection = RegExp(r'<style=".*?">|</style>')
+          .allMatches(text)
+          .map((e) => RichTextSelection(
+              start: e.start, end: e.end, text: text.substring(e.start, e.end)))
+          .toList();
+/*
+      for (int x = 0; x < codeSelection.length; x++) {
+        start = start +
+            codeSelection
+                .where((element) => element.start < start)
+                .toList()
+                .fold(0, (p, n) => p + n.text.length);
+
+        
+      }*/
+
+      for (int x = 0; x < codeSelection.length; x++) {
+        print(codeSelection.where((element) => element.start < end));
       }
+
+      log("length : [${text.span.toPlainText().length},${text.length}]; start : [${textSelection.start},$start]; end : [${textSelection.end},$end]; text: [${text.span.toPlainText().substring(textSelection.start, textSelection.end)},${text.substring(start, end)}]");
 
       /* final String newText = text.replaceRange(
           textSelection.baseOffset,
@@ -32,7 +46,6 @@ class RichTextController extends ChangeNotifier {
 
   void updateTextSelection(TextSelection newTextSelection) {
     textSelection = newTextSelection;
-    print(textSelection);
     notifyListeners();
   }
 }

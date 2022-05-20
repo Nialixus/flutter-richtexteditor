@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
 
   final RichTextController controller = RichTextController(
       text:
-          """<Lorem<style="font-color:0xff000456;font-weight:6;"> ipsum do</style>lor s<style="font-weight:6;font-color:0xffbbb456;">it am</style>et""");
+          """Lorem<style="font-color:0xff000fff;font-weight:6;"> ipsum do</style>lor s<style="font-weight:6;font-color:0xffff0000;">it am</style>et""");
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,7 +19,10 @@ class MyApp extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
           Expanded(
-            child: RichTextEditor(controller: controller),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 300, left: 50),
+              child: RichTextEditor(controller: controller),
+            ),
           ),
           RichTextToolbar(controller: controller)
         ])));
