@@ -11,18 +11,14 @@ class RichTextController extends ChangeNotifier {
     if (!textSelection.isCollapsed) {
       int start = textSelection.baseOffset;
       int end = textSelection.extentOffset;
-      print("start : $start, end : $end");
-      if (text.isformatted(end)) {
-        start = start + 10;
-      }
 
-      log("syled : $text" +
-          '\n' +
-          "substyled : ${text.substring(start, end)}" +
-          '\n' +
-          "origin : ${text.span.toPlainText()} " +
-          '\n' +
-          "suborigin : ${text.span.toPlainText().substring(start, end)}");
+      if (text.substring(0, end).contains("<")) {
+        RegExp regex = RegExp(r'<style=".*?">');
+        if (regex.hasMatch(text)) {
+          String newText = regex.stringMatch(text)!;
+          print(text.substring(start + newText.length, end + newText.length));
+        }
+      }
 
       /* final String newText = text.replaceRange(
           textSelection.baseOffset,

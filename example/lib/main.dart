@@ -9,7 +9,8 @@ class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 
   final RichTextController controller = RichTextController(
-      text: """<Lorem<style="font-weight:6;"> ipsum do</style>lor sit amet""");
+      text:
+          """<Lorem<style="font-color:0xff000456;font-weight:6;"> ipsum do</style>lor s<style="font-weight:6;font-color:0xffbbb456;">it am</style>et""");
   @override
   Widget build(BuildContext context) {
     return Scaffold(

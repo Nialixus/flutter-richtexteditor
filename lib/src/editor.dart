@@ -28,6 +28,7 @@ class RichTextState extends State<RichTextEditor> {
         widget.controller.updateTextSelection(selection);
       }),
     );
+
 /*
     print("text : " +
         widget.controller.text +

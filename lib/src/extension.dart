@@ -8,10 +8,6 @@ export 'extension.dart' hide RichTextStringEntension;
 extension RichTextStringEntension on String {
   TextSpan get span => RichTextSpan().toSpan(this);
 
-  List<String> multiSplit(Iterable<String> delimeters) => delimeters.isEmpty
-      ? [this]
-      : split(RegExp(delimeters.map(RegExp.escape).join('|')));
-
   TextSelection selection(int start, int end) {
     if (isformatted(end)) {
       return TextSelection(
@@ -38,7 +34,8 @@ extension RichTextStringEntension on String {
     }
   }
 }
-
+/*
 extension RichTextSpanExtension on TextSpan {
   String get origin => RichTextSpan().toOrigin(this);
 }
+*/
