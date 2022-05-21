@@ -51,5 +51,6 @@ class RichTextSpan {
   /// Encode [String] to [TextSpan].
   TextSpan toSpan(String string) => TextSpan(
       children: List.generate(
-          split(string).length, (index) => span(split(string)[index])));
+          split(string).length, (index) => span(split(string)[index])),
+      style: const TextStyle(color: Colors.black));
 }

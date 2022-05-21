@@ -1,8 +1,8 @@
-part of '/flutter_richtexteditor.dart';
+part of '/richtrex.dart';
 
-class RichTextToolbar extends StatelessWidget {
-  const RichTextToolbar({Key? key, required this.controller}) : super(key: key);
-  final RichTextController controller;
+class RichTrexToolbar extends StatelessWidget {
+  const RichTrexToolbar({Key? key, required this.controller}) : super(key: key);
+  final RichTrexController controller;
 
   @override
   Widget build(BuildContext context) {
