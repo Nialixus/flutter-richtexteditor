@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:richexpression/richtrex.dart';
+import 'package:richtrex/richtrex.dart';
 
 void main() {
   runApp(MaterialApp(debugShowCheckedModeBanner: false, home: MyApp()));
@@ -8,18 +8,21 @@ void main() {
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 
-  final RichTrexController controller = RichTrex.controller(
-      text:
-          """Lorem<style="font-color:0xff000fff;font-weight:6;"> ipsum do</style>lor s<style="font-weight:6;font-color:0xffff0000;">it am</style>et""");
+  final RichTrexController controller =
+      RichTrexController(text: "lorem ipsum dolor sit amet");
+
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SafeArea(
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-          Expanded(child: RichTrex.editor(controller: controller)),
-          RichTrex.toolbar(controller: controller)
-        ])));
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(child: RichTrex.editor(controller: controller)),
+            RichTrex.toolbar(controller: controller)
+          ],
+        ),
+      ),
+    );
   }
 }

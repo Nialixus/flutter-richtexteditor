@@ -1,6 +1,7 @@
 library richtrex;
 
 import 'dart:developer';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import 'src/extension.dart';

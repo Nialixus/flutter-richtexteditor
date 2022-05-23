@@ -5,6 +5,13 @@ class RichTrexController extends TextEditingController {
 
   //final RichTrexNotifier _notifier = RichTrexNotifier();
 
+  List<LineMetrics> metrics = [];
+
+  void updateMetrics(List<LineMetrics> metrics) {
+    this.metrics = metrics;
+    notifyListeners();
+  }
+
   void onTap({required RichTextFormat format}) {
     log('selection: $selection\nvalue: ${value.selection}\n${super.selection}'); /*
     if (!super.selection.isCollapsed) {
