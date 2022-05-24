@@ -1,38 +1,39 @@
 library richtrex;
 
 import 'dart:developer';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 
-import 'src/extension.dart';
-import 'src/format.dart';
-import 'src/richtrex_editor.dart';
-
-export 'richtrex.dart' show RichTrexToolbar, RichTrexController;
+export 'richtrex.dart'
+    hide
+        RichTextSelection,
+        RichTrexFormat,
+        RichTrexToolbar,
+        RichTrexEditor,
+        RichTrexController;
 
 part 'src/richtrex_controller.dart';
-part 'src/richtrex_notifier.dart';
 part 'src/richtrex_toolbar.dart';
+part 'src/richtrex_format.dart';
+part 'src/richtrex_editor.dart';
 
-class RichTrex {
-  static RichTrexController controller({String? text}) =>
-      RichTrexController(text: text);
+class RichTrex extends StatelessWidget {
+  const RichTrex.editor({Key? key, required this.controller})
+      : _id = 0,
+        super(key: key);
+  const RichTrex.toolbar({Key? key, required this.controller})
+      : _id = 1,
+        super(key: key);
 
-  static Widget editor({required RichTrexController controller}) =>
-      RichTrexEditor(controller: controller);
+  final int _id;
+  final RichTrexController controller;
 
-  static Widget toolbar({required RichTrexController controller}) => Row(
-        children: [
-          for (int x = 0; x < 4; x++)
-            IconButton(
-              onPressed: () {},
-              icon: Icon([
-                Icons.format_bold,
-                Icons.format_italic,
-                Icons.format_underline,
-                Icons.format_strikethrough
-              ][x]),
-            )
-        ],
-      );
+  @override
+  Widget build(BuildContext context) {
+    return [
+      RichTrexEditor(controller: controller),
+      RichTrexToolbar(controller: controller)
+    ][_id];
+  }
+
+  static TextSpan decode(String string) => RichTrexFormat._decode(string);
 }

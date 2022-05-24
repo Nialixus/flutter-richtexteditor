@@ -13,8 +13,8 @@ class RichTrexToolbar extends StatelessWidget {
             onPressed: () {
               controller.onTap(
                   format: [
-                RichTextFormat.color(value: "0xff345aaa"),
-                RichTextFormat.bold()
+                RichTrexFormat.color(value: "0xff345aaa"),
+                RichTrexFormat.bold()
               ][x]);
             },
             child: Icon(

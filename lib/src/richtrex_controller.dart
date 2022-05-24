@@ -3,18 +3,9 @@ part of '/richtrex.dart';
 class RichTrexController extends TextEditingController {
   RichTrexController({super.text});
 
-  //final RichTrexNotifier _notifier = RichTrexNotifier();
-
-  List<LineMetrics> metrics = [];
-
-  void updateMetrics(List<LineMetrics> metrics) {
-    this.metrics = metrics;
-    notifyListeners();
-  }
-
-  void onTap({required RichTextFormat format}) {
-    log('selection: $selection\nvalue: ${value.selection}\n${super.selection}'); /*
-    if (!super.selection.isCollapsed) {
+  void onTap({required RichTrexFormat format}) {
+    log('selection: $selection\nvalue: ${value.selection}\n${super.selection}');
+    if (!selection.isCollapsed) {
       int start = selection.baseOffset;
       int end = selection.extentOffset;
 
@@ -36,19 +27,14 @@ class RichTrexController extends TextEditingController {
         
       }*/
 
-      for (int x = 0; x < codeSelection.length; x++) {}
+      log("length : [${RichTrexFormat._decode(text).toPlainText().length},${text.length}]; start : [${selection.start},$start]; end : [${selection.end},$end]; text: [${RichTrexFormat._decode(text).toPlainText().substring(selection.start, selection.end)},${text.substring(start, end)}]");
 
-      log("length : [${text.span.toPlainText().length},${text.length}]; start : [${selection.start},$start]; end : [${selection.end},$end]; text: [${text.span.toPlainText().substring(selection.start, selection.end)},${text.substring(start, end)}]");
-
-      /* final String newText = text.replaceRange(
-          textSelection.baseOffset,
-          textSelection.extentOffset,
-          """<style="${format.code}">${text.substring(textSelection.baseOffset, textSelection.extentOffset)}</style>""");
+      final String newText = text.replaceRange(start, end,
+          """<style="${format.code}">${text.substring(start, end)}</style>""");
 
       text = newText;
-      notifyListeners();*/
+      notifyListeners();
     }
-*/
   }
 
   @override
@@ -56,6 +42,6 @@ class RichTrexController extends TextEditingController {
       {required BuildContext context,
       TextStyle? style,
       required bool withComposing}) {
-    return text.span;
+    return RichTrexFormat._decode(text);
   }
 }

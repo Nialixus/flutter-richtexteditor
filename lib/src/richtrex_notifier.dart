@@ -1,4 +1,4 @@
-part of '/richtrex.dart';
+/*
 
 class RichTrexNotifier extends ChangeNotifier {
   RichTrexNotifier({this.text = ""});
@@ -54,3 +54,4 @@ class RichTrexNotifier extends ChangeNotifier {
     notifyListeners();
   }
 }
+*/
