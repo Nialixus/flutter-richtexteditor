@@ -16,13 +16,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("RichTrex"), elevation: 0.0),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(child: RichTrex.editor(controller: controller)),
-            RichTrex.toolbar(controller: controller)
-          ],
-        ),
+      body: Column(
+        children: [
+          Expanded(child: RichTrex.editor(controller: controller)),
+          RichTrex.toolbar(controller: controller)
+        ],
       ),
     );
   }

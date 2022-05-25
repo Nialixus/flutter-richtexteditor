@@ -1,12 +1,13 @@
 part of '/richtrex.dart';
 
 class RichTrexFormat {
-  final String code;
-  final String? value;
+  final String _code;
 
-  RichTrexFormat.bold({this.value}) : code = "font-weight:${value ?? 6};";
-  RichTrexFormat.color({this.value})
-      : code = "font-color:${value ?? 0xff000000};";
+  RichTrexFormat.bold({required FontWeight value})
+      : _code = "font-weight:${value.index};";
+  RichTrexFormat.color({required Color value})
+      : _code = "font-color:0x${value.value.toRadixString(16)};";
+  RichTrexFormat.raw({required bool value}) : _code = "text-raw:$value;";
 
   /// Splitting [String] into [List] of String.
   static List<String> _split(String string) {
@@ -60,14 +61,13 @@ class RichTrexFormat {
       style: const TextStyle(color: Colors.black));
 }
 
-class RichTextSelection {
+class RichTrexSelection {
   final int start, end;
   final String text;
-  const RichTextSelection(
-      {required this.start, required this.end, required this.text});
+  const RichTrexSelection({this.start = 0, this.end = 0, this.text = ""});
 
   @override
   String toString() {
-    return "RichTextSelection(start: $start, end: $end, text: $text)";
+    return "RichTrexSelection(start: $start, end: $end, text: $text)";
   }
 }

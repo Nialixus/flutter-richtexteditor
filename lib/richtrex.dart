@@ -1,20 +1,14 @@
 library richtrex;
 
 import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
-export 'richtrex.dart'
-    hide
-        RichTextSelection,
-        RichTrexFormat,
-        RichTrexToolbar,
-        RichTrexEditor,
-        RichTrexController;
+import 'src/richtrex_toolbar.dart';
+import 'src/richtrex_editor.dart';
 
 part 'src/richtrex_controller.dart';
-part 'src/richtrex_toolbar.dart';
 part 'src/richtrex_format.dart';
-part 'src/richtrex_editor.dart';
 
 class RichTrex extends StatelessWidget {
   const RichTrex.editor({Key? key, required this.controller})
