@@ -10,34 +10,35 @@ class RichTrexController extends TextEditingController {
 
   @override
   set selection(TextSelection newSelection) {
-    richTrexSelection = RichTrexSelection.fromTextSelection(raw,
+    richTrexSelection = RichTrexSelection.fromTextSelection(
         selection: newSelection, fullText: super.text);
 
     super.selection = newSelection;
   }
 
   void onTap({required RichTrexFormat format}) {
-    if (selection.isCollapsed && format._code.contains("text-raw")) {
-      bool matched = bool.fromEnvironment(
-          RegExp(r'(?<=text-raw:).*?(?=;)').stringMatch(format._code)!);
-      if (raw == matched) {
-        raw = !matched;
-        notifyListeners();
-      } else {
-        raw = matched;
-        notifyListeners();
-      }
-    } else {
-      final int end = selection.end;
+    if (format.code.contains("text-raw")) {
+      raw = !raw;
+      notifyListeners();
+    }
 
-      final String newText = format._code.contains("text-raw:")
-          ? text
-          : text.replaceRange(richTrexSelection.start, richTrexSelection.end,
-              """<style="${format._code}">${text.substring(richTrexSelection.start, richTrexSelection.end)}</style>""");
+    if (!selection.isCollapsed) {
+      final TextSelection rawSelection = selection;
+      final RichTrexSelection richSelection =
+          RichTrexSelection.fromTextSelection(
+              selection: selection, fullText: text);
 
-      text = newText;
-      selection =
-          TextSelection.collapsed(offset: raw ? richTrexSelection.end : end);
+      final String newText = text.replaceRange(
+          richTrexSelection.start,
+          richTrexSelection.end,
+          """<tag="${format.code}">${text.substring(richTrexSelection.start, richTrexSelection.end)}</tag>""");
+      if (!format.code.contains("text-raw")) text = newText;
+
+      selection = raw
+          ? TextSelection(
+              baseOffset: richTrexSelection.start,
+              extentOffset: richTrexSelection.end)
+          : rawSelection;
     }
   }
 

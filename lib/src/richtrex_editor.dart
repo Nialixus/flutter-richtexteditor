@@ -18,7 +18,6 @@ class RichTrexEditor extends StatelessWidget {
           controller: controller,
           style: const TextStyle(height: 1.75, fontSize: 14),
           textAlignVertical: TextAlignVertical.center,
-          textAlign: TextAlign.justify,
           scrollPadding: EdgeInsets.zero,
           decoration: const InputDecoration(
             isDense: true,
