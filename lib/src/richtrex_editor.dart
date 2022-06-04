@@ -10,20 +10,16 @@ class RichTrexEditor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scrollbar(
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-            border: Border.all(width: 1, color: const Color(0xffD5D5D5))),
-        child: TextField(
-          maxLines: null,
-          controller: controller,
-          style: const TextStyle(height: 1.75, fontSize: 14),
-          textAlignVertical: TextAlignVertical.center,
-          scrollPadding: EdgeInsets.zero,
-          decoration: const InputDecoration(
-            isDense: true,
-            contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
-            border: InputBorder.none,
-          ),
+      child: TextField(
+        maxLines: null,
+        controller: controller,
+        style: const TextStyle(color: Colors.black),
+        textAlignVertical: TextAlignVertical.center,
+        scrollPadding: EdgeInsets.zero,
+        decoration: const InputDecoration(
+          isDense: true,
+          contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
+          border: InputBorder.none,
         ),
       ),
     );

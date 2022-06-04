@@ -15,13 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("RichTrex"), elevation: 0.0),
-      body: Column(
-        children: [
-          Expanded(child: RichTrex.editor(controller: controller)),
-          RichTrex.toolbar(controller: controller)
-        ],
-      ),
+      body: SafeArea(child: RichTrex(controller: controller)),
     );
   }
 }

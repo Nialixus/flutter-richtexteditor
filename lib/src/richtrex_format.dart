@@ -55,10 +55,10 @@ class RichTrexFormat {
   }
 
   /// Decode [String] to [TextSpan].
-  static TextSpan _decode(String string) => TextSpan(
+  static TextSpan _decode(String string, {TextStyle? style}) => TextSpan(
       children: List.generate(
           _split(string).length, (index) => _span(_split(string)[index])),
-      style: const TextStyle(color: Colors.black));
+      style: style ?? const TextStyle(color: Colors.black));
 }
 
 class RichTrexSelection {
@@ -84,9 +84,6 @@ class RichTrexSelection {
                       ? richSelection
                           .sublist(0, x)
                           .fold(0, (p, e) => p + e.text.length)
-                      : 0) +
-                  (richSelection[x].text.contains(RegExp(r'<tag=".*?">|</tag>'))
-                      ? 1
                       : 0) >
               richSelection[x].start
       ];
