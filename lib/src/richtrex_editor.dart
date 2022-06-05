@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:richtrex/richtrex.dart';
 
@@ -13,6 +15,12 @@ class RichTrexEditor extends StatelessWidget {
       child: TextField(
         maxLines: null,
         controller: controller,
+        focusNode: FocusNode(
+          onKeyEvent: (node, event) {
+            log(event.character.toString());
+            return KeyEventResult.ignored;
+          },
+        ),
         style: const TextStyle(color: Colors.black),
         textAlignVertical: TextAlignVertical.center,
         scrollPadding: EdgeInsets.zero,

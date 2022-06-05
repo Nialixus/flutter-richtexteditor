@@ -2,12 +2,13 @@ part of '/richtrex.dart';
 
 /// State manager or [RichTrex].
 ///
-/// By default connecting text editor and command button.
+/// Connecting text editor and command button.
 class RichTrexController extends TextEditingController {
   RichTrexController({String? text}) : super(text: text);
-  bool raw = false;
 
-  RichTrexHistory history = RichTrexHistory(index: 0, history: []);
+  bool richTrexRaw = false;
+  late String richTrexText = super.text;
+  RichTrexHistory richTrexHistory = RichTrexHistory(index: 0, history: []);
   late RichTrexSelection richTrexSelection = RichTrexSelection(
       start: 0,
       end: super.text.length,
@@ -15,25 +16,16 @@ class RichTrexController extends TextEditingController {
 
   @override
   set selection(TextSelection newSelection) {
-    richTrexSelection = raw
+    richTrexSelection = richTrexRaw
         ? RichTrexSelection(
-            start: newSelection.start,
             end: newSelection.end,
+            start: newSelection.start,
             text: text.substring(newSelection.start, newSelection.end))
         : RichTrexSelection.fromTextSelection(
             selection: newSelection, text: super.text);
     super.selection = newSelection;
-  }
 
-  @override
-  set text(String newText) {
-    history = RichTrexHistory(
-        index: history.index + 1, history: history.history..add(newText));
-    super.text = selection.isCollapsed
-        ? text.substring(0, richTrexSelection.end) +
-            newText +
-            text.substring(richTrexSelection.end, text.length)
-        : newText;
+    log(selection.asString(text) + '\n' + richTrexSelection.toString());
   }
 
   void onTap({required RichTrexFormat format}) async {
@@ -45,15 +37,15 @@ class RichTrexController extends TextEditingController {
           baseOffset: rawSelection.start, extentOffset: newText.length);
       text = text.replaceRange(
           richTrexSelection.start, richTrexSelection.end, newText);
-      selection = !raw
-          ? rawSelection
-          : TextSelection(
-              baseOffset: richSelection.start, extentOffset: newText.length);
+      selection = richTrexRaw
+          ? TextSelection(
+              baseOffset: richSelection.start, extentOffset: newText.length)
+          : rawSelection;
     } else {
-      raw = !raw;
+      richTrexRaw = !richTrexRaw;
       notifyListeners();
 
-      selection = raw
+      selection = richTrexRaw
           ? TextSelection(
               baseOffset: richTrexSelection.start,
               extentOffset: richTrexSelection.end)
@@ -66,7 +58,7 @@ class RichTrexController extends TextEditingController {
       {required BuildContext context,
       TextStyle? style,
       required bool withComposing}) {
-    return raw
+    return richTrexRaw
         ? TextSpan(text: text, style: style)
         : RichTrexFormat._decode(text, style: style);
   }

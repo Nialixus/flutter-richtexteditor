@@ -1,5 +1,7 @@
 library richtrex;
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 import 'src/richtrex_toolbar.dart';

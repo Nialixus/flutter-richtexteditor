@@ -29,14 +29,14 @@ class _RichTrexToolbarState extends State<RichTrexToolbar> {
                   format: [
                 RichTrexFormat.color(value: Colors.red),
                 RichTrexFormat.bold(value: FontWeight.w900),
-                RichTrexFormat.raw(value: widget.controller.raw),
+                RichTrexFormat.raw(value: widget.controller.richTrexRaw),
               ][x]);
             },
             child: Icon(
               [
                 Icons.color_lens,
                 Icons.format_bold,
-                widget.controller.raw ? Icons.code_off : Icons.code
+                widget.controller.richTrexRaw ? Icons.code_off : Icons.code
               ][x],
             ),
           ),
