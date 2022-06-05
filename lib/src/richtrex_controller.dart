@@ -34,26 +34,27 @@ class RichTrexController extends TextEditingController {
   }
 
   void onTap({required RichTrexFormat format}) async {
-    final TextSelection rawSelection = selection;
-
-    final String newText = text.replaceRange(
-        richTrexSelection.start,
-        richTrexSelection.end,
-        """<tag="${format.code}">${text.substring(richTrexSelection.start, richTrexSelection.end)}</tag>""");
     if (!format.code.contains("text-raw")) {
-      text = newText;
-      selection = rawSelection;
+      final TextSelection rawSelection = selection;
+      final String newText =
+          """<tag="${format.code}">${text.substring(richTrexSelection.start, richTrexSelection.end)}</tag>""";
+      final TextSelection richSelection = TextSelection(
+          baseOffset: rawSelection.start, extentOffset: newText.length);
+      text = text.replaceRange(
+          richTrexSelection.start, richTrexSelection.end, newText);
+      selection = !raw
+          ? rawSelection
+          : TextSelection(
+              baseOffset: richSelection.start, extentOffset: newText.length);
     } else {
       raw = !raw;
       notifyListeners();
-      if (raw) {
-        selection = TextSelection(
-            baseOffset: richTrexSelection.start,
-            extentOffset: richTrexSelection.end);
-      } else {
-        selection =
-            RichTrexSelection.toTextSelection(selection: selection, text: text);
-      }
+
+      selection = raw
+          ? TextSelection(
+              baseOffset: richTrexSelection.start,
+              extentOffset: richTrexSelection.end)
+          : RichTrexSelection.toTextSelection(selection: selection, text: text);
     }
   }
 
