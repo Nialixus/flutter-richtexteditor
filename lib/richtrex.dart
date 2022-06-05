@@ -1,7 +1,5 @@
 library richtrex;
 
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 
 import 'src/richtrex_toolbar.dart';
@@ -9,6 +7,7 @@ import 'src/richtrex_editor.dart';
 
 part 'src/richtrex_controller.dart';
 part 'src/richtrex_selection.dart';
+part 'src/richtrex_history.dart';
 part 'src/richtrex_format.dart';
 
 class RichTrex extends StatelessWidget {

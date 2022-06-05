@@ -7,6 +7,7 @@ class RichTrexController extends TextEditingController {
   RichTrexController({String? text}) : super(text: text);
   bool raw = false;
 
+  RichTrexHistory history = RichTrexHistory(index: 0, history: []);
   late RichTrexSelection richTrexSelection = RichTrexSelection(
       start: 0,
       end: super.text.length,
@@ -14,23 +15,25 @@ class RichTrexController extends TextEditingController {
 
   @override
   set selection(TextSelection newSelection) {
-    if (!raw) {
-      richTrexSelection = RichTrexSelection.fromTextSelection(
-          selection: newSelection, text: super.text);
-    } else {
-      richTrexSelection = RichTrexSelection(
-          start: newSelection.start,
-          end: newSelection.end,
-          text: text.substring(newSelection.start, newSelection.end));
-    }
-/*
-    log(raw.toString() +
-        '\n' +
-        selection.asString(text) +
-        '\n' +
-        richTrexSelection.toString());*/
-
+    richTrexSelection = raw
+        ? RichTrexSelection(
+            start: newSelection.start,
+            end: newSelection.end,
+            text: text.substring(newSelection.start, newSelection.end))
+        : RichTrexSelection.fromTextSelection(
+            selection: newSelection, text: super.text);
     super.selection = newSelection;
+  }
+
+  @override
+  set text(String newText) {
+    history = RichTrexHistory(
+        index: history.index + 1, history: history.history..add(newText));
+    super.text = selection.isCollapsed
+        ? text.substring(0, richTrexSelection.end) +
+            newText +
+            text.substring(richTrexSelection.end, text.length)
+        : newText;
   }
 
   void onTap({required RichTrexFormat format}) async {
