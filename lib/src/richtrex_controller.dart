@@ -7,12 +7,28 @@ class RichTrexController extends TextEditingController {
   RichTrexController({String? text}) : super(text: text);
 
   bool richTrexRaw = false;
-  late String richTrexText = super.text;
+  String character = "";
   RichTrexHistory richTrexHistory = RichTrexHistory(index: 0, history: []);
   late RichTrexSelection richTrexSelection = RichTrexSelection(
       start: 0,
       end: super.text.length,
       text: super.text.substring(0, super.text.length));
+
+  void updateCharacter(String newCharacter) {
+    character = newCharacter;
+
+    String startText = super.text.substring(0, richTrexSelection.end);
+    String endText = super.text.substring(richTrexSelection.end, text.length);
+    print(character.hashCode);
+
+    log(startText + character + endText);
+
+    notifyListeners();
+
+    text = startText + character + endText;
+    selection = TextSelection.collapsed(
+        offset: startText.span.toPlainText().length + character.length);
+  }
 
   @override
   set selection(TextSelection newSelection) {
@@ -25,7 +41,7 @@ class RichTrexController extends TextEditingController {
             selection: newSelection, text: super.text);
     super.selection = newSelection;
 
-    log(selection.asString(text) + '\n' + richTrexSelection.toString());
+    //log(selection.asString(text) + '\n' + richTrexSelection.toString());
   }
 
   void onTap({required RichTrexFormat format}) async {
