@@ -8,8 +8,7 @@ void main() {
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 
-  final RichTrexController controller =
-      RichTrexController(text: "lorem ipsum dolor sit amet");
+  final RichTrexController controller = RichTrexController(text: "simple");
 
   // This widget is the root of your application.
   @override

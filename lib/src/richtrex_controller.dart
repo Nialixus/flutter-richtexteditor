@@ -19,7 +19,6 @@ class RichTrexController extends TextEditingController {
 
     String startText = super.text.substring(0, richTrexSelection.end);
     String endText = super.text.substring(richTrexSelection.end, text.length);
-    print(character.hashCode);
 
     log(startText + character + endText);
 
@@ -42,6 +41,36 @@ class RichTrexController extends TextEditingController {
     super.selection = newSelection;
 
     //log(selection.asString(text) + '\n' + richTrexSelection.toString());
+  }
+
+  @override
+  set value(TextEditingValue newValue) {
+    var oldT = value.text.split('');
+    var newT = newValue.text.split('');
+    List left = List.generate(newT.length, (x) {
+      try {
+        return newT[x] == oldT[x];
+      } catch (e) {
+        return false;
+      }
+    });
+    List right = List.generate(newT.length, (x) {
+      var oldT2 = oldT.reversed.toList();
+      var newT2 = newT.reversed.toList();
+      try {
+        return newT2[x] == oldT2[x];
+      } catch (e) {
+        return false;
+      }
+    });
+    if (newValue.selection.affinity != TextAffinity.upstream &&
+        newValue.text != super.value.text) {
+      log(left.indexWhere((val) => val == false).toString() +
+          '\n' +
+          right.indexWhere((val) => val == false).toString());
+    }
+
+    super.value = newValue;
   }
 
   void onTap({required RichTrexFormat format}) async {

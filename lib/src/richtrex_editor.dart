@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:richtrex/richtrex.dart';
 
 export 'richtrex_editor.dart' hide RichTrexEditor;
@@ -13,18 +16,7 @@ class RichTrexEditor extends StatelessWidget {
       child: TextField(
         maxLines: null,
         controller: controller,
-        focusNode: FocusNode(
-          onKeyEvent: (node, event) {
-            if (event.character != null) {
-              controller.updateCharacter(event.character!);
-            }
-
-            return KeyEventResult.handled;
-          },
-        ),
         style: const TextStyle(color: Colors.black),
-        textAlignVertical: TextAlignVertical.center,
-        scrollPadding: EdgeInsets.zero,
         decoration: const InputDecoration(
           isDense: true,
           contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
