@@ -45,32 +45,55 @@ class RichTrexController extends TextEditingController {
 
   @override
   set value(TextEditingValue newValue) {
-    var oldT = value.text.split('');
-    var newT = newValue.text.split('');
-    List left = List.generate(newT.length, (x) {
-      try {
-        return newT[x] == oldT[x];
-      } catch (e) {
-        return false;
-      }
-    });
-    List right = List.generate(newT.length, (x) {
-      var oldT2 = oldT.reversed.toList();
-      var newT2 = newT.reversed.toList();
-      try {
-        return newT2[x] == oldT2[x];
-      } catch (e) {
-        return false;
-      }
-    });
     if (newValue.selection.affinity != TextAffinity.upstream &&
         newValue.text != super.value.text) {
-      log(left.indexWhere((val) => val == false).toString() +
-          '\n' +
-          right.indexWhere((val) => val == false).toString());
-    }
+      final RichTrexSelection oldSelection = richTrexSelection;
+      int start = newValue.text
+          .split('')
+          .asMap()
+          .entries
+          .map((e) {
+            try {
+              return e.value == value.text.split('')[e.key];
+            } catch (e) {
+              return false;
+            }
+          })
+          .toList()
+          .indexWhere((val) => val == false);
+      int end = newValue.text.length -
+          newValue.text
+              .split("")
+              .reversed
+              .toList()
+              .asMap()
+              .entries
+              .map((e) {
+                try {
+                  return e.value ==
+                      value.text.split('').reversed.toList()[e.key];
+                } catch (e) {
+                  return false;
+                }
+              })
+              .toList()
+              .indexWhere((val) => val == false);
 
-    super.value = newValue;
+      try {
+        final firstString = newValue.text.substring(0, richTrexSelection.start);
+        final lastString = newValue.text
+            .substring(richTrexSelection.end, newValue.text.length);
+        final midString = newValue.text.substring(start, end);
+
+        log(firstString + midString + lastString);
+
+        super.value = newValue;
+      } catch (e) {
+        super.value = newValue;
+      }
+    } else {
+      super.value = newValue;
+    }
   }
 
   void onTap({required RichTrexFormat format}) async {
@@ -79,12 +102,13 @@ class RichTrexController extends TextEditingController {
       final String newText =
           """<tag="${format.code}">${text.substring(richTrexSelection.start, richTrexSelection.end)}</tag>""";
       final TextSelection richSelection = TextSelection(
-          baseOffset: rawSelection.start, extentOffset: newText.length);
+          baseOffset: rawSelection.start, extentOffset: rawSelection.end);
       text = text.replaceRange(
           richTrexSelection.start, richTrexSelection.end, newText);
       selection = richTrexRaw
           ? TextSelection(
-              baseOffset: richSelection.start, extentOffset: newText.length)
+              baseOffset: richSelection.start,
+              extentOffset: richSelection.start + newText.length)
           : rawSelection;
     } else {
       richTrexRaw = !richTrexRaw;

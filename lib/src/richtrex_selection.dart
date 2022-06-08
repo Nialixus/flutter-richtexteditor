@@ -21,7 +21,8 @@ class RichTrexSelection {
                       ? richSelection
                           .sublist(0, x)
                           .fold(0, (p, e) => p + e.text.length)
-                      : 0) >
+                      : 0) +
+                  (richSelection[x].text.contains(RegExp(r'</tag>')) ? 1 : 0) >
               richSelection[x].start
       ];
 
