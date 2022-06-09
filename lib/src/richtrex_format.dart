@@ -60,7 +60,3 @@ class RichTrexFormat {
           _split(string).length, (index) => _span(_split(string)[index])),
       style: style ?? const TextStyle(color: Colors.black));
 }
-
-extension TextSpanString on String {
-  TextSpan get span => RichTrexFormat._decode(this);
-}

@@ -70,21 +70,21 @@ class RichTrexSelection {
         .toList();
 
     int start() {
-      List<bool> selected = [
-        for (int x = 0; x < richSelection.length; x++)
-          selection.start > richSelection[x].start
-      ];
+      var index = 0;
+      for (int x = 0; x < richSelection.length; x++) {
+        if (selection.start > richSelection[x].start) {
+          index = x;
+        } else {
+          break;
+        }
+      }
 
-      int lastRichSelection = selected.lastIndexWhere((val) => val == true);
-
-      return selected.contains(true)
-          ? (selection.start < richSelection[lastRichSelection].end
-                  ? richSelection[lastRichSelection].end
-                  : selection.start) -
-              richSelection
-                  .sublist(0, lastRichSelection + 1)
-                  .fold<int>(0, (p, e) => p + e.text.length)
-          : selection.start;
+      return (selection.start < richSelection[index].end
+              ? richSelection[index].end
+              : selection.start) -
+          richSelection
+              .sublist(0, index + 1)
+              .fold<int>(0, (p, e) => p + e.text.length);
     }
 
     int end() {
