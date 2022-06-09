@@ -29,27 +29,26 @@ class RichTrexController extends TextEditingController {
 
   @override
   set value(TextEditingValue newValue) {
-    log(richTrexSelection.toString());
     if (newValue.selection.affinity != TextAffinity.upstream &&
         newValue.text != super.value.text) {
       try {
-        var compare = super.value.text.compareWith(newValue.text);
+        var newRichSelection = RichTrexSelection.fromTextSelection(
+            selection: TextSelection(
+                baseOffset: newValue.selection.start,
+                extentOffset: newValue.selection.end),
+            text: newValue.text);
+        log(newValue.text
+            .substring(richTrexSelection.start, newRichSelection.start));
 
-        String midText = newValue.text.substring(compare.start, compare.end);
-        String startText = super.text.substring(0, richTrexSelection.end);
-        String endText =
-            super.text.substring(richTrexSelection.end, text.length);
-        if (compare.start == compare.end ||
-            compare.end == richTrexSelection.start) {
-          // log('${richTrexSelection.toString()}, $start, $end');
-          super.value = newValue;
-        } else {
-          super.value = newValue.copyWith(
-            text: selection.isCollapsed
-                ? startText + midText + endText
-                : newValue.text,
-          );
-        }
+        final finalText = newRichSelection.start == newRichSelection.end
+            ? value.text.replaceRange(
+                richTrexSelection.start, richTrexSelection.end, "")
+            : value.text.substring(0, newRichSelection.start) +
+                newValue.text
+                    .substring(richTrexSelection.start, richTrexSelection.end) +
+                value.text.substring(newRichSelection.end, value.text.length);
+
+        super.value = newValue.copyWith(text: finalText);
       } catch (e) {
         super.value = newValue;
       }

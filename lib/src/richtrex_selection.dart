@@ -5,6 +5,10 @@ class RichTrexSelection {
   final String text;
   const RichTrexSelection(
       {required this.start, required this.end, required this.text});
+  const RichTrexSelection.invalid()
+      : start = 0,
+        end = 0,
+        text = '';
   factory RichTrexSelection.fromTextSelection(
       {required TextSelection selection, required String text}) {
     List<RichTrexSelection> richSelection = RegExp(r'<tag=".*?">|</tag>')
@@ -57,8 +61,10 @@ class RichTrexSelection {
 
     // log("raw(${selection.start} ${selection.end});rich(${start()} ${end()})");
 
-    return RichTrexSelection(
-        start: start(), end: end(), text: text.substring(start(), end()));
+    return (start() == -1 || end() == -1)
+        ? const RichTrexSelection.invalid()
+        : RichTrexSelection(
+            start: start(), end: end(), text: text.substring(start(), end()));
   }
 
   static TextSelection toTextSelection(

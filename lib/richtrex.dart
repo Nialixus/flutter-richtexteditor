@@ -3,7 +3,6 @@ library richtrex;
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:richtrex/src/richtrex_extension.dart';
 
 import 'src/richtrex_toolbar.dart';
 import 'src/richtrex_editor.dart';
