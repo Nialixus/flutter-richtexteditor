@@ -4,27 +4,32 @@ part of '/richtrex.dart';
 ///
 /// Connecting text editor and command button.
 class RichTrexController extends TextEditingController {
-  RichTrexController({String? text}) : super(text: text);
+  bool viewSource;
+  RichTrexController({String? text, this.viewSource = false})
+      : super(text: text);
 
-  bool richTrexRaw = false;
   RichTrexHistory richTrexHistory = RichTrexHistory(index: 0, history: []);
-  late RichTrexSelection richTrexSelection = RichTrexSelection(
-      start: 0,
-      end: super.text.length,
-      text: super.text.substring(0, super.text.length));
+  late RichTrexSelection richTrexSelection =
+      RichTrexSelection.fromSelection(selection: selection, text: text);
 
   @override
   set selection(TextSelection newSelection) {
-    richTrexSelection = richTrexRaw
+    richTrexSelection = viewSource
         ? RichTrexSelection(
             end: newSelection.end,
             start: newSelection.start,
             text: text.substring(newSelection.start, newSelection.end))
-        : RichTrexSelection.fromTextSelection(
+        : RichTrexSelection.fromSelection(
             selection: newSelection, text: super.text);
-    super.selection = newSelection;
-
-    //log(selection.asString(text) + '\n' + richTrexSelection.toString());
+    final String finalText =
+        viewSource ? text : RichTrexFormat._decode(text).toPlainText();
+    super.selection = newSelection.copyWith(
+        baseOffset: newSelection.baseOffset >= finalText.length
+            ? finalText.length
+            : newSelection.baseOffset,
+        extentOffset: newSelection.extentOffset >= finalText.length
+            ? finalText.length
+            : newSelection.extentOffset);
   }
 
   @override
@@ -32,26 +37,22 @@ class RichTrexController extends TextEditingController {
     if (newValue.selection.affinity != TextAffinity.upstream &&
         newValue.text != super.value.text) {
       try {
-        var newRichSelection = RichTrexSelection.fromTextSelection(
-            selection: TextSelection(
-                baseOffset: newValue.selection.start,
-                extentOffset: newValue.selection.end),
-            text: newValue.text);
-        log(newValue.text
-            .substring(richTrexSelection.start, newRichSelection.start));
+        String newText = newValue.text
+            .substring(value.selection.start, newValue.selection.start);
+        String finalText = value.selection.start > newValue.selection.start
+            ? super.value.text.replaceRange(
+                richTrexSelection.start, richTrexSelection.start, "@")
+            : super.value.text.replaceRange(
+                richTrexSelection.start, richTrexSelection.end, newText);
 
-        final finalText = newRichSelection.start == newRichSelection.end
-            ? value.text.replaceRange(
-                richTrexSelection.start, richTrexSelection.end, "")
-            : value.text.substring(0, newRichSelection.start) +
-                newValue.text
-                    .substring(richTrexSelection.start, richTrexSelection.end) +
-                value.text.substring(newRichSelection.end, value.text.length);
-
-        super.value = newValue.copyWith(text: finalText);
+        text = finalText;
+        selection = newValue.selection;
       } catch (e) {
         super.value = newValue;
       }
+    } else if (newValue.selection.affinity != TextAffinity.upstream) {
+      log(text.substring(richTrexSelection.start, text.length));
+      super.value = newValue;
     } else {
       super.value = newValue;
     }
@@ -66,20 +67,20 @@ class RichTrexController extends TextEditingController {
           baseOffset: rawSelection.start, extentOffset: rawSelection.end);
       text = text.replaceRange(
           richTrexSelection.start, richTrexSelection.end, newText);
-      selection = richTrexRaw
+      selection = viewSource
           ? TextSelection(
               baseOffset: richSelection.start,
               extentOffset: richSelection.start + newText.length)
           : rawSelection;
     } else {
-      richTrexRaw = !richTrexRaw;
+      viewSource = !viewSource;
       notifyListeners();
 
-      selection = richTrexRaw
+      selection = viewSource
           ? TextSelection(
               baseOffset: richTrexSelection.start,
               extentOffset: richTrexSelection.end)
-          : RichTrexSelection.toTextSelection(selection: selection, text: text);
+          : RichTrexSelection.toSelection(selection: selection, text: text);
     }
   }
 
@@ -88,11 +89,22 @@ class RichTrexController extends TextEditingController {
       {required BuildContext context,
       TextStyle? style,
       required bool withComposing}) {
-    return richTrexRaw
+    return viewSource
         ? TextSpan(
-            text: text,
+            children: super
+                .text
+                .split(RegExp(
+                    r'(?=<tag=".*?">)|(?<=<tag=".*?">)|(?=</tag>)|(?<=</tag>)'))
+                .map((e) => TextSpan(
+                    text: e,
+                    style: e.contains(RegExp(r'<tag=".*?">|</tag>'))
+                        ? TextStyle(
+                            fontWeight: FontWeight.w400,
+                            color: Colors.blue.shade700)
+                        : null))
+                .toList(),
             style: style?.copyWith(
-                fontWeight: richTrexRaw ? FontWeight.w300 : style.fontWeight))
+                fontWeight: viewSource ? FontWeight.w300 : style.fontWeight))
         : RichTrexFormat._decode(text, style: style);
   }
 }

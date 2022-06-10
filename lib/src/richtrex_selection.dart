@@ -5,11 +5,7 @@ class RichTrexSelection {
   final String text;
   const RichTrexSelection(
       {required this.start, required this.end, required this.text});
-  const RichTrexSelection.invalid()
-      : start = 0,
-        end = 0,
-        text = '';
-  factory RichTrexSelection.fromTextSelection(
+  factory RichTrexSelection.fromSelection(
       {required TextSelection selection, required String text}) {
     List<RichTrexSelection> richSelection = RegExp(r'<tag=".*?">|</tag>')
         .allMatches(text)
@@ -18,56 +14,66 @@ class RichTrexSelection {
         .toList();
 
     int start() {
-      List<bool> selected = [
-        for (int x = 0; x < richSelection.length; x++)
-          selection.start +
-                  (x > 0
-                      ? richSelection
-                          .sublist(0, x)
-                          .fold(0, (p, e) => p + e.text.length)
-                      : 0) +
-                  (richSelection[x].text.contains(RegExp(r'</tag>')) ? 1 : 0) >
-              richSelection[x].start
-      ];
+      int index = -1;
+      for (int x = 0; x < richSelection.length; x++) {
+        if (selection.start +
+                (x > 0
+                    ? richSelection
+                        .sublist(0, x)
+                        .fold(0, (p, e) => p + e.text.length)
+                    : 0) +
+                (richSelection[x].text.contains(RegExp(r'</tag>')) ? 1 : 0) >
+            richSelection[x].start) {
+          index = x;
+        } else {
+          break;
+        }
+      }
 
-      return selected.contains(true)
-          ? selection.start +
+      return index < 0
+          ? selection.start
+          : selection.start +
               richSelection
-                  .sublist(0, selected.lastIndexWhere((val) => val == true) + 1)
-                  .fold<int>(0, (p, e) => p + e.text.length)
-          : selection.start;
+                  .sublist(0, index + 1)
+                  .fold<int>(0, (p, e) => p + e.text.length);
     }
 
     int end() {
-      List<bool> selected = [
-        for (int x = 0; x < richSelection.length; x++)
-          selection.end +
-                  (x > 0
-                      ? richSelection
-                          .sublist(0, x)
-                          .fold(0, (p, e) => p + e.text.length)
-                      : 0) +
-                  (richSelection[x].text.contains(RegExp(r'</tag>')) ? 1 : 0) >
-              richSelection[x].start
-      ];
+      int index = -1;
+      for (int x = 0; x < richSelection.length; x++) {
+        if (selection.end +
+                (x > 0
+                    ? richSelection
+                        .sublist(0, x)
+                        .fold(0, (p, e) => p + e.text.length)
+                    : 0) +
+                (richSelection[x].text.contains(RegExp(r'</tag>')) ? 1 : 0) >
+            richSelection[x].start) {
+          index = x;
+        } else {
+          break;
+        }
+      }
 
-      return selected.contains(true)
-          ? selection.end +
+      return index < 0
+          ? selection.end
+          : selection.end +
               richSelection
-                  .sublist(0, selected.lastIndexWhere((val) => val == true) + 1)
-                  .fold<int>(0, (p, e) => p + e.text.length)
-          : selection.end;
+                  .sublist(0, index + 1)
+                  .fold<int>(0, (p, e) => p + e.text.length);
     }
 
-    // log("raw(${selection.start} ${selection.end});rich(${start()} ${end()})");
-
-    return (start() == -1 || end() == -1)
-        ? const RichTrexSelection.invalid()
-        : RichTrexSelection(
-            start: start(), end: end(), text: text.substring(start(), end()));
+    return (start() < 0 || end() < 0)
+        ? const RichTrexSelection(start: 0, end: 0, text: "")
+        : start() >= text.length + 1 || end() >= text.length + 1
+            ? RichTrexSelection(start: text.length, end: text.length, text: "")
+            : RichTrexSelection(
+                start: start(),
+                end: end(),
+                text: text.substring(start(), end()));
   }
 
-  static TextSelection toTextSelection(
+  static TextSelection toSelection(
       {required TextSelection selection, required String text}) {
     List<RichTrexSelection> richSelection = RegExp(r'<tag=".*?">|</tag>')
         .allMatches(text)
@@ -76,7 +82,7 @@ class RichTrexSelection {
         .toList();
 
     int start() {
-      var index = 0;
+      int index = -1;
       for (int x = 0; x < richSelection.length; x++) {
         if (selection.start > richSelection[x].start) {
           index = x;
@@ -85,32 +91,36 @@ class RichTrexSelection {
         }
       }
 
-      return (selection.start < richSelection[index].end
-              ? richSelection[index].end
-              : selection.start) -
-          richSelection
-              .sublist(0, index + 1)
-              .fold<int>(0, (p, e) => p + e.text.length);
+      return index < 0
+          ? selection.start
+          : (selection.start < richSelection[index].end
+                  ? richSelection[index].end
+                  : selection.start) -
+              richSelection
+                  .sublist(0, index + 1)
+                  .fold<int>(0, (p, e) => p + e.text.length);
     }
 
     int end() {
-      List<bool> selected = [
-        for (int x = 0; x < richSelection.length; x++)
-          selection.end +
-                  (richSelection[x].text.contains(RegExp(r'</tag>')) ? 1 : 0) >
-              richSelection[x].start
-      ];
+      int index = -1;
+      for (int x = 0; x < richSelection.length; x++) {
+        if (selection.end +
+                (richSelection[x].text.contains(RegExp(r'</tag>')) ? 1 : 0) >
+            richSelection[x].start) {
+          index = x;
+        } else {
+          break;
+        }
+      }
 
-      int lastRichSelection = selected.lastIndexWhere((val) => val == true);
-
-      return selected.contains(true)
-          ? (selection.end < richSelection[lastRichSelection].end
-                  ? richSelection[lastRichSelection].end
+      return index < 0
+          ? selection.end
+          : (selection.end < richSelection[index].end
+                  ? richSelection[index].end
                   : selection.end) -
               richSelection
-                  .sublist(0, lastRichSelection + 1)
-                  .fold<int>(0, (p, e) => p + e.text.length)
-          : selection.end;
+                  .sublist(0, index + 1)
+                  .fold<int>(0, (p, e) => p + e.text.length);
     }
 
     return TextSelection(baseOffset: start(), extentOffset: end());
@@ -119,15 +129,5 @@ class RichTrexSelection {
   @override
   String toString() {
     return "RichTrexSelection(start: $start, end: $end, text: $text)";
-  }
-}
-
-extension TextSelectionString on TextSelection {
-  String asString(String text) {
-    return '$this'
-        .replaceAll(RegExp(r'(affinity|isDirectional).*?(true|false)'),
-            'text: ${textInside(text)}')
-        .replaceAll('baseOffset', 'start')
-        .replaceAll('extentOffset', 'end');
   }
 }
