@@ -22,19 +22,15 @@ class _RichTrexToolbarState extends State<RichTrexToolbar> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        for (int x = 0; x < 3; x++)
+        for (int x = 0; x < widget.controller.formats.length; x++)
           MaterialButton(
             onPressed: () {
-              widget.controller.onTap(
-                  format: [
-                RichTrexFormat.color(value: Colors.red),
-                RichTrexFormat.bold(value: FontWeight.w900),
-                RichTrexFormat.raw(value: widget.controller.viewSource),
-              ][x]);
+              widget.controller.onTap(format: widget.controller.formats[x]);
             },
             child: Icon(
               [
-                Icons.color_lens,
+                // Icons.color_lens,
+                //Icons.image,
                 Icons.format_bold,
                 widget.controller.viewSource ? Icons.code_off : Icons.code
               ][x],
