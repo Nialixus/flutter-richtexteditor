@@ -27,9 +27,9 @@ class _RichTrexToolbarState extends State<RichTrexToolbar> {
             onPressed: () {
               widget.controller.onTap(
                   format: [
-                RichTrexFormat.color(value: Colors.red),
-                RichTrexFormat.bold(value: FontWeight.w900),
-                RichTrexFormat.viewsource(value: widget.controller.viewSource),
+                RichTrexCommand.color(value: Colors.red),
+                RichTrexCommand.bold(value: FontWeight.w900),
+                RichTrexCommand.viewsource(value: widget.controller.viewSource),
               ][x]);
             },
             child: Icon(

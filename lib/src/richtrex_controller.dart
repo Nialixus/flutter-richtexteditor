@@ -21,7 +21,7 @@ class RichTrexController extends TextEditingController {
         : RichTrexSelection.fromSelection(
             selection: newSelection, text: super.text);
     final String finalText =
-        viewSource ? text : RichTrexFormat._decode(text).toPlainText();
+        viewSource ? text : RichTrexFormat.decode(text).toPlainText();
     super.selection = newSelection.copyWith(
         baseOffset: newSelection.baseOffset >= finalText.length
             ? finalText.length
@@ -59,7 +59,7 @@ class RichTrexController extends TextEditingController {
     }
   }
 
-  void onTap({required RichTrexFormat format}) async {
+  void onTap({required RichTrexCommand format}) async {
     if (!format.code.contains("view-source")) {
       final TextSelection rawSelection = selection;
       final String newText =
@@ -107,6 +107,6 @@ class RichTrexController extends TextEditingController {
                 .toList(),
             style: style?.copyWith(
                 fontWeight: viewSource ? FontWeight.w300 : style.fontWeight))
-        : RichTrexFormat._decode(text);
+        : RichTrexFormat.decode(text, style: style);
   }
 }
