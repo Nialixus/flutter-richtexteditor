@@ -11,6 +11,7 @@ import 'src/richtrex_editor.dart';
 part 'src/richtrex_controller.dart';
 part 'src/richtrex_selection.dart';
 part 'src/richtrex_format.dart';
+part 'src/richtrex_command.dart';
 
 class RichTrex extends StatelessWidget {
   const RichTrex({Key? key, this.controller})

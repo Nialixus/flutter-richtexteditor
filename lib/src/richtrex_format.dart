@@ -1,31 +1,5 @@
 part of '/richtrex.dart';
 
-class RichTrexCommand {
-  final String code;
-  final String name;
-  final String value;
-
-  RichTrexCommand({required this.name, required this.value})
-      : code = "$name:$value;";
-
-  @override
-  String toString() =>
-      'RichTrexCommand(name: $name, value: $value, code: "$code")';
-
-  static RichTrexCommand bold({required FontWeight value}) {
-    return RichTrexCommand(name: "font-color", value: '$value');
-  }
-
-  static RichTrexCommand color({required Color value}) {
-    return RichTrexCommand(
-        name: "font-color", value: '0x${value.value.toRadixString(16)}');
-  }
-
-  static RichTrexCommand viewsource({required bool value}) {
-    return RichTrexCommand(name: "view-source", value: '$value');
-  }
-}
-
 class RichTrexFormat extends TextSpan {
   const RichTrexFormat(
       {String? text,
@@ -69,21 +43,129 @@ class RichTrexFormat extends TextSpan {
     Color? color(String text) {
       try {
         RegExp regex = RegExp(r'(?<=font-color:).*?(?=;)');
-        String color = regex.stringMatch(text)!;
-        return Color(int.parse(color));
+        String value = regex.stringMatch(text)!;
+        return Color(int.parse(value));
       } catch (e) {
         return null;
       }
     }
 
-    // Get FontWeight from Tag.
+    // Get Background-Color from Tag.
+    Color? backgroundColor(String text) {
+      try {
+        RegExp regex = RegExp(r'(?<=background-color:).*?(?=;)');
+        String value = regex.stringMatch(text)!;
+        return Color(int.parse(value));
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // Get Font-Weight from Tag.
     FontWeight? fontWeight(String text) {
       try {
         RegExp regex = RegExp(r'(?<=font-weight:).*?(?=;)');
-        String weight = regex.stringMatch(text)!;
-        return FontWeight.values[int.parse(weight)];
+        String value = regex.stringMatch(text)!;
+        return FontWeight.values[int.parse(value)];
       } catch (e) {
         return null;
+      }
+    }
+
+    // Get Font-Height from Tag.
+    double? fontHeight(String text) {
+      try {
+        RegExp regex = RegExp(r'(?<=font-height:).*?(?=;)');
+        String value = regex.stringMatch(text)!;
+        return double.parse(value);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // Get Font-Family from Tag.
+    String? fontFamily(String text) {
+      try {
+        RegExp regex = RegExp(r'(?<=font-family:).*?(?=;)');
+        return regex.stringMatch(text)!;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // Get Font-Size from Tag.
+    double? fontSize(String text) {
+      try {
+        RegExp regex = RegExp(r'(?<=font-size:).*?(?=;)');
+        String value = regex.stringMatch(text)!;
+        return double.parse(value);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // Get Font-Height from Tag.
+    double? fontSpace(String text) {
+      try {
+        RegExp regex = RegExp(r'(?<=font-space:).*?(?=;)');
+        String value = regex.stringMatch(text)!;
+        return double.parse(value);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // Get Font-Shadow from Tag.
+    Shadow fontShadow(String text) {
+      try {
+        /*
+        RegExp regex = RegExp(r'(?<=font-space:).*?(?=;)');
+        String value = regex.stringMatch(text)!;*/
+        return const Shadow();
+      } catch (e) {
+        return const Shadow(
+            blurRadius: 0.0, color: Colors.transparent, offset: Offset(0, 0));
+      }
+    }
+
+    // Get Italic from Tag.
+    FontStyle? italic(String text) {
+      try {
+        RegExp regex = RegExp(r'(?<=decoration-italic:).*?(?=;)');
+        String value = regex.stringMatch(text)!;
+        return FontStyle.values[int.parse(value)];
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // Get Strikethrough from Tag.
+    TextDecoration strikeThrough(String text) {
+      RegExp regex = RegExp(r'(?<=decoration-strikethrough:).*?(?=;)');
+      if (text.contains(regex) == true) {
+        return TextDecoration.lineThrough;
+      } else {
+        return TextDecoration.none;
+      }
+    }
+
+    // Get Underline from Tag.
+    TextDecoration underline(String text) {
+      RegExp regex = RegExp(r'(?<=decoration-underline:).*?(?=;)');
+      if (text.contains(regex) == true) {
+        return TextDecoration.underline;
+      } else {
+        return TextDecoration.none;
+      }
+    }
+
+    // Get Overline from Tag.
+    TextDecoration overline(String text) {
+      RegExp regex = RegExp(r'(?<=decoration-overline:).*?(?=;)');
+      if (text.contains(regex) == true) {
+        return TextDecoration.overline;
+      } else {
+        return TextDecoration.none;
       }
     }
 
@@ -93,7 +175,20 @@ class RichTrexFormat extends TextSpan {
       return TextSpan(
           text: newText(textlist[x]),
           style: style?.copyWith(
-              color: color(textlist[x]), fontWeight: fontWeight(textlist[x])));
+              color: color(textlist[x]),
+              fontStyle: italic(textlist[x]),
+              height: fontHeight(textlist[x]),
+              fontSize: fontSize(textlist[x]),
+              shadows: [fontShadow(textlist[x])],
+              fontWeight: fontWeight(textlist[x]),
+              fontFamily: fontFamily(textlist[x]),
+              letterSpacing: fontSpace(textlist[x]),
+              backgroundColor: backgroundColor(textlist[x]),
+              decoration: TextDecoration.combine([
+                overline(textlist[x]),
+                underline(textlist[x]),
+                strikeThrough(textlist[x])
+              ])));
     }));
   }
 }
