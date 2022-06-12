@@ -2,7 +2,6 @@ library richtrex;
 
 import 'dart:developer';
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'src/richtrex_toolbar.dart';
@@ -14,35 +13,23 @@ part 'src/richtrex_format.dart';
 part 'src/richtrex_command.dart';
 
 class RichTrex extends StatelessWidget {
-  const RichTrex({Key? key, this.controller})
-      : _id = 0,
-        super(key: key);
-  const RichTrex.editor({Key? key, required this.controller})
-      : _id = 1,
-        assert(controller != null),
-        super(key: key);
-  const RichTrex.toolbar({Key? key, required this.controller})
-      : _id = 2,
-        assert(controller != null),
-        super(key: key);
-
-  final int _id;
+  const RichTrex({Key? key, this.controller}) : super(key: key);
   final RichTrexController? controller;
 
   @override
   Widget build(BuildContext context) {
-    if (_id == 0) {
-      RichTrexController defaultController = controller ?? RichTrexController();
-      return Column(children: [
-        Expanded(child: RichTrexEditor(controller: defaultController)),
-        RichTrexToolbar(controller: defaultController)
-      ]);
-    }
-    return [
-      RichTrexEditor(controller: controller!),
-      RichTrexToolbar(controller: controller!)
-    ][_id - 1];
+    RichTrexController defaultController = controller ?? RichTrexController();
+    return Column(children: [
+      Expanded(child: editor(controller: defaultController)),
+      toolbar(controller: defaultController)
+    ]);
   }
+
+  static StatelessWidget editor({required RichTrexController controller}) =>
+      RichTrexEditor(controller: controller);
+
+  static StatefulWidget toolbar({required RichTrexController controller}) =>
+      RichTrexToolbar(controller: controller);
 
   static TextSpan decode(String string) => RichTrexFormat.decode(string);
 }

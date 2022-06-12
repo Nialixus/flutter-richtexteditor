@@ -1,30 +1,7 @@
 part of '/richtrex.dart';
 
-class RichTrexFormat extends TextSpan {
-  const RichTrexFormat(
-      {String? text,
-      Locale? locale,
-      bool? spellOut,
-      TextStyle? style,
-      String? semanticsLabel,
-      MouseCursor? mouseCursor,
-      List<InlineSpan>? children,
-      GestureRecognizer? recognizer,
-      void Function(PointerExitEvent)? onExit,
-      void Function(PointerEnterEvent)? onEnter})
-      : super(
-            text: text,
-            style: style,
-            locale: locale,
-            onExit: onExit,
-            onEnter: onEnter,
-            children: children,
-            spellOut: spellOut,
-            recognizer: recognizer,
-            mouseCursor: mouseCursor,
-            semanticsLabel: semanticsLabel);
-
-  factory RichTrexFormat.decode(String text, {TextStyle? style}) {
+class RichTrexFormat {
+  static TextSpan decode(String text, {TextStyle? style}) {
     // Split text between Tagged Text and Plain Text.
     List<String> textlist = text.split(RegExp(
         r'(?=<(style|widget)=.*?</(style|widget)>)|(?<=<(style|widget)=.*?</(style|widget)>)'));
@@ -170,7 +147,7 @@ class RichTrexFormat extends TextSpan {
     }
 
     // Styled TextSpan from Tag.
-    return RichTrexFormat(
+    return TextSpan(
         children: List.generate(textlist.length, (x) {
       return TextSpan(
           text: newText(textlist[x]),
