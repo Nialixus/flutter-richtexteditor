@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
 
   final RichTrexController controller = RichTrexController(
       text:
-          'lorem <tag="font-weight:8;">ipsum</tag> dolor <tag="font-color:0xFFFF1212;">sit</tag> amet');
+          'lorem <style="font-weight:8;">ipsum</style> dolor <style="font-color:0xFFFF1212;">sit</style> amet');
 
   // This widget is the root of your application.
   @override

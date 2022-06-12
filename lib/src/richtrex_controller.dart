@@ -8,13 +8,12 @@ class RichTrexController extends TextEditingController {
   RichTrexController({String? text, this.viewSource = false})
       : super(text: text);
 
-  RichTrexHistory richTrexHistory = RichTrexHistory(index: 0, history: []);
-  late RichTrexSelection richTrexSelection =
+  late RichTrexSelection selectionSource =
       RichTrexSelection.fromSelection(selection: selection, text: text);
 
   @override
   set selection(TextSelection newSelection) {
-    richTrexSelection = viewSource
+    selectionSource = viewSource
         ? RichTrexSelection(
             end: newSelection.end,
             start: newSelection.start,
@@ -40,10 +39,12 @@ class RichTrexController extends TextEditingController {
         String newText = newValue.text
             .substring(value.selection.start, newValue.selection.start);
         String finalText = value.selection.start > newValue.selection.start
-            ? super.value.text.replaceRange(
-                richTrexSelection.start, richTrexSelection.start, "@")
+            ? super
+                .value
+                .text
+                .replaceRange(selectionSource.start, selectionSource.start, "@")
             : super.value.text.replaceRange(
-                richTrexSelection.start, richTrexSelection.end, newText);
+                selectionSource.start, selectionSource.end, newText);
 
         text = finalText;
         selection = newValue.selection;
@@ -51,7 +52,7 @@ class RichTrexController extends TextEditingController {
         super.value = newValue;
       }
     } else if (newValue.selection.affinity != TextAffinity.upstream) {
-      log(text.substring(richTrexSelection.start, text.length));
+      log(text.substring(selectionSource.start, text.length));
       super.value = newValue;
     } else {
       super.value = newValue;
@@ -59,14 +60,14 @@ class RichTrexController extends TextEditingController {
   }
 
   void onTap({required RichTrexFormat format}) async {
-    if (!format.code.contains("text-raw")) {
+    if (!format.code.contains("view-source")) {
       final TextSelection rawSelection = selection;
       final String newText =
-          """<tag="${format.code}">${text.substring(richTrexSelection.start, richTrexSelection.end)}</tag>""";
+          """<style="${format.code}">${text.substring(selectionSource.start, selectionSource.end)}</style>""";
       final TextSelection richSelection = TextSelection(
           baseOffset: rawSelection.start, extentOffset: rawSelection.end);
       text = text.replaceRange(
-          richTrexSelection.start, richTrexSelection.end, newText);
+          selectionSource.start, selectionSource.end, newText);
       selection = viewSource
           ? TextSelection(
               baseOffset: richSelection.start,
@@ -78,8 +79,8 @@ class RichTrexController extends TextEditingController {
 
       selection = viewSource
           ? TextSelection(
-              baseOffset: richTrexSelection.start,
-              extentOffset: richTrexSelection.end)
+              baseOffset: selectionSource.start,
+              extentOffset: selectionSource.end)
           : RichTrexSelection.toSelection(selection: selection, text: text);
     }
   }
@@ -94,10 +95,11 @@ class RichTrexController extends TextEditingController {
             children: super
                 .text
                 .split(RegExp(
-                    r'(?=<tag=".*?">)|(?<=<tag=".*?">)|(?=</tag>)|(?<=</tag>)'))
+                    r'(?=<(style|widget)=".*?">)|(?<=<(style|widget)=".*?">)|(?=</(style|widget)>)|(?<=</(style|widget)>)'))
                 .map((e) => TextSpan(
                     text: e,
-                    style: e.contains(RegExp(r'<tag=".*?">|</tag>'))
+                    style: e.contains(
+                            RegExp(r'<(style|widget)=".*?">|</(style|widget)>'))
                         ? TextStyle(
                             fontWeight: FontWeight.w400,
                             color: Colors.blue.shade700)
@@ -105,6 +107,6 @@ class RichTrexController extends TextEditingController {
                 .toList(),
             style: style?.copyWith(
                 fontWeight: viewSource ? FontWeight.w300 : style.fontWeight))
-        : RichTrexFormat._decode(text, style: style);
+        : RichTrexFormat._decode(text);
   }
 }
