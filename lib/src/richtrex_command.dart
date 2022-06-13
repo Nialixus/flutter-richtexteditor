@@ -1,63 +1,71 @@
 part of '/richtrex.dart';
 
+/// Command to execute changing Plain Text into Rich Text.
 class RichTrexCommand {
+  /// End result of [map] which will be used in [RichTrexController].
   final String code;
-  final String name;
-  final String value;
 
-  RichTrexCommand({required this.name, required this.value})
-      : code = "$name:$value;";
+  /// Input which will be converted into [code].
+  final Map<String, String> map;
 
-  RichTrexCommand.map({required Map<String, String> map})
-      : name = "",
-        value = "",
-        code =
+  /// Executing [code] from [map].
+  RichTrexCommand({required this.map})
+      : code =
             '${List.generate(map.length, (x) => "${map.keys.toList()[x]}:${map.values.toList()[x]}").join(";")};';
 
+  /// Executing command to change Text Color.
   RichTrexCommand.fontColor({required Color value})
-      : this(name: 'font-color', value: '0x${value.value.toRadixString(16)}');
+      : this(map: {'font-color': '0x${value.value.toRadixString(16)}'});
 
+  /// Executing command to change Background Color.
   RichTrexCommand.backgroundColor({required Color value})
-      : this(
-            name: 'background-color',
-            value: '0x${value.value.toRadixString(16)}');
+      : this(map: {'background-color': '0x${value.value.toRadixString(16)}'});
 
+  /// Executing command to change Boldness of Text.
   RichTrexCommand.fontWeight({required FontWeight value})
-      : this(name: "font-weight", value: '${value.index}');
+      : this(map: {'font-weight': '${value.index}'});
 
+  /// Executing command to change Text Height.
   RichTrexCommand.fontHeight({required double value})
-      : this(name: 'font-height', value: '$value');
+      : this(map: {'font-height': '$value'});
 
+  /// Executing command to change Font Family of Text.
   RichTrexCommand.fontFamily({required String value})
-      : this(name: "font-family", value: value);
+      : this(map: {"font-family": value});
 
+  /// Executing command to change Text Size.
   RichTrexCommand.fontSize({required double value})
-      : this(name: "font-size", value: '$value');
+      : this(map: {"font-size": '$value'});
 
+  /// Executing command to change Space between Letter.
   RichTrexCommand.fontSpace({required double value})
-      : this(name: 'font-space', value: '$value');
+      : this(map: {'font-space': '$value'});
 
+  /// Executing command to give shadow upon Text.
   RichTrexCommand.shadow({required Shadow value})
-      : this.map(map: {
+      : this(map: {
           "shadow-color": "0x${value.color.value.toRadixString(16)}",
           "shadow-x": "${value.offset.dx}",
           "shadow-y": "${value.offset.dy}",
           "shadow-blur": "${value.blurRadius}"
         });
 
-  RichTrexCommand.italic() : this(name: "decoration", value: 'italic');
+  /// Executing command to make Text Skewed.
+  RichTrexCommand.italic() : this(map: {"decoration": 'italic'});
 
-  RichTrexCommand.strikeThrough()
-      : this(name: "decoration", value: "strikethrough");
+  /// Executing command to give Line through Text
+  RichTrexCommand.strikeThrough() : this(map: {"decoration": "strikethrough"});
 
-  RichTrexCommand.underline() : this(name: "decoration", value: "underline");
+  /// Executing command to give Line bellow Text
+  RichTrexCommand.underline() : this(map: {"decoration": "underline"});
 
-  RichTrexCommand.overline() : this(name: "decoration", value: "overline");
+  /// Executing command to give Line on Text
+  RichTrexCommand.overline() : this(map: {"decoration": "overline"});
 
+  /// Executing command to view source code of Rich Text.
   RichTrexCommand.viewSource({required bool value})
-      : this(name: "view-source", value: '$value');
+      : this(map: {"view-source": '$value'});
 
   @override
-  String toString() =>
-      'RichTrexCommand(name: $name, value: $value, code: "$code")';
+  String toString() => 'RichTrexCommand(map: $map, code: "$code")';
 }
