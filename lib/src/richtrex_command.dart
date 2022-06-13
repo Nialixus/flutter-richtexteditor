@@ -11,7 +11,7 @@ class RichTrexCommand {
   /// Executing [code] from [map].
   RichTrexCommand({required this.map})
       : code =
-            '${List.generate(map.length, (x) => "${map.keys.toList()[x]}:${map.values.toList()[x]}").join(";")};';
+            '$map'.replaceAll(RegExp(r'{|}|\s'), "").replaceAll(",", ";") + ';';
 
   /// Executing command to change Text Color.
   RichTrexCommand.fontColor({required Color value})
@@ -56,10 +56,10 @@ class RichTrexCommand {
   /// Executing command to give Line through Text
   RichTrexCommand.strikeThrough() : this(map: {"decoration": "strikethrough"});
 
-  /// Executing command to give Line bellow Text
+  /// Executing command to give Line below Text
   RichTrexCommand.underline() : this(map: {"decoration": "underline"});
 
-  /// Executing command to give Line on Text
+  /// Executing command to give Line above Text
   RichTrexCommand.overline() : this(map: {"decoration": "overline"});
 
   /// Executing command to view source code of Rich Text.
