@@ -31,5 +31,5 @@ class RichTrex extends StatelessWidget {
   static StatefulWidget toolbar({required RichTrexController controller}) =>
       RichTrexToolbar(controller: controller);
 
-  static TextSpan decode(String string) => RichTrexFormat.decode(string);
+  static TextSpan decode(String string) => RichTrexFormat().decode(string);
 }

@@ -7,11 +7,14 @@ class RichTrexSelection {
       {required this.start, required this.end, required this.text});
   factory RichTrexSelection.fromSelection(
       {required TextSelection selection, required String text}) {
-    List<RichTrexSelection> richSelection = RegExp(r'<tag=".*?">|</tag>')
-        .allMatches(text)
-        .map((e) => RichTrexSelection(
-            start: e.start, end: e.end, text: text.substring(e.start, e.end)))
-        .toList();
+    List<RichTrexSelection> richSelection =
+        RegExp(r'<(style|widget)=".*?">|</(style|widget)>')
+            .allMatches(text)
+            .map((e) => RichTrexSelection(
+                start: e.start,
+                end: e.end,
+                text: text.substring(e.start, e.end)))
+            .toList();
 
     int start() {
       int index = -1;
@@ -22,7 +25,9 @@ class RichTrexSelection {
                         .sublist(0, x)
                         .fold(0, (p, e) => p + e.text.length)
                     : 0) +
-                (richSelection[x].text.contains(RegExp(r'</tag>')) ? 1 : 0) >
+                (richSelection[x].text.contains(RegExp(r'</(style|widget)>'))
+                    ? 1
+                    : 0) >
             richSelection[x].start) {
           index = x;
         } else {
@@ -47,7 +52,9 @@ class RichTrexSelection {
                         .sublist(0, x)
                         .fold(0, (p, e) => p + e.text.length)
                     : 0) +
-                (richSelection[x].text.contains(RegExp(r'</tag>')) ? 1 : 0) >
+                (richSelection[x].text.contains(RegExp(r'</(style|widget)>'))
+                    ? 1
+                    : 0) >
             richSelection[x].start) {
           index = x;
         } else {
@@ -75,11 +82,14 @@ class RichTrexSelection {
 
   static TextSelection toSelection(
       {required TextSelection selection, required String text}) {
-    List<RichTrexSelection> richSelection = RegExp(r'<tag=".*?">|</tag>')
-        .allMatches(text)
-        .map((e) => RichTrexSelection(
-            start: e.start, end: e.end, text: text.substring(e.start, e.end)))
-        .toList();
+    List<RichTrexSelection> richSelection =
+        RegExp(r'<(style|widget)=".*?">|</(style|widget)>')
+            .allMatches(text)
+            .map((e) => RichTrexSelection(
+                start: e.start,
+                end: e.end,
+                text: text.substring(e.start, e.end)))
+            .toList();
 
     int start() {
       int index = -1;
@@ -105,7 +115,9 @@ class RichTrexSelection {
       int index = -1;
       for (int x = 0; x < richSelection.length; x++) {
         if (selection.end +
-                (richSelection[x].text.contains(RegExp(r'</tag>')) ? 1 : 0) >
+                (richSelection[x].text.contains(RegExp(r'</(style|widget)>'))
+                    ? 1
+                    : 0) >
             richSelection[x].start) {
           index = x;
         } else {

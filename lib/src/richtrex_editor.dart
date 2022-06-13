@@ -13,6 +13,7 @@ class RichTrexEditor extends StatelessWidget {
       child: TextField(
         maxLines: null,
         controller: controller,
+        textAlignVertical: TextAlignVertical.center,
         style: const TextStyle(color: Colors.black),
         decoration: const InputDecoration(
           isDense: true,

@@ -20,27 +20,33 @@ class _RichTrexToolbarState extends State<RichTrexToolbar> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        for (int x = 0; x < 3; x++)
-          MaterialButton(
-            onPressed: () {
-              widget.controller.onTap(
-                  format: [
-                RichTrexCommand.color(value: Colors.red),
-                RichTrexCommand.bold(value: FontWeight.w900),
-                RichTrexCommand.viewsource(value: widget.controller.viewSource),
-              ][x]);
-            },
-            child: Icon(
-              [
-                Icons.color_lens,
-                Icons.format_bold,
-                widget.controller.viewSource ? Icons.code_off : Icons.code
-              ][x],
-            ),
-          ),
-      ],
+    List<RichTrexCommand> format = [
+      RichTrexCommand.underline(),
+      RichTrexCommand.overline(),
+      RichTrexCommand.strikeThrough(),
+      RichTrexCommand.viewSource(value: widget.controller.viewSource),
+      RichTrexCommand.italic(),
+      RichTrexCommand.shadow(
+          value: const Shadow(color: Colors.red, blurRadius: 10.0)),
+      RichTrexCommand.fontColor(value: Colors.red),
+      RichTrexCommand.fontSpace(value: 100.0),
+      RichTrexCommand.fontSize(value: 30.0),
+      RichTrexCommand.fontHeight(value: 10.0),
+      RichTrexCommand.fontWeight(value: FontWeight.w900),
+      RichTrexCommand.fontFamily(value: "Times New Roman"),
+    ];
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          for (int x = 0; x < format.length; x++)
+            MaterialButton(
+                onPressed: () {
+                  widget.controller.onTap(format: format[x]);
+                },
+                child: Text(x.toString())),
+        ],
+      ),
     );
   }
 }

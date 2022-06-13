@@ -1,7 +1,7 @@
 part of '/richtrex.dart';
 
 class RichTrexFormat {
-  static TextSpan decode(String text, {TextStyle? style}) {
+  TextSpan decode(String text, [TextStyle? style]) {
     // Split text between Tagged Text and Plain Text.
     List<String> textlist = text.split(RegExp(
         r'(?=<(style|widget)=.*?</(style|widget)>)|(?<=<(style|widget)=.*?</(style|widget)>)'));
@@ -50,6 +50,8 @@ class RichTrexFormat {
     }
 
     // Get Font-Height from Tag.
+    //
+    // Removed due vertical align is not centered.
     double? fontHeight(String text) {
       try {
         RegExp regex = RegExp(r'(?<=font-height:).*?(?=;)');
@@ -92,13 +94,18 @@ class RichTrexFormat {
       }
     }
 
-    // Get Font-Shadow from Tag.
-    Shadow fontShadow(String text) {
+    // Get Shadow from Tag.
+    Shadow shadow(String text) {
       try {
-        /*
-        RegExp regex = RegExp(r'(?<=font-space:).*?(?=;)');
-        String value = regex.stringMatch(text)!;*/
-        return const Shadow();
+        String blurRadius =
+            RegExp(r'(?<=shadow-blur:).*?(?=;)').stringMatch(text)!;
+        String x = RegExp(r'(?<=shadow-x:).*?(?=;)').stringMatch(text)!;
+        String y = RegExp(r'(?<=shadow-y:).*?(?=;)').stringMatch(text)!;
+        String color = RegExp(r'(?<=shadow-color:).*?(?=;)').stringMatch(text)!;
+        return Shadow(
+            color: Color(int.parse(color)),
+            blurRadius: double.parse(blurRadius),
+            offset: Offset(double.parse(x), double.parse(y)));
       } catch (e) {
         return const Shadow(
             blurRadius: 0.0, color: Colors.transparent, offset: Offset(0, 0));
@@ -108,9 +115,8 @@ class RichTrexFormat {
     // Get Italic from Tag.
     FontStyle? italic(String text) {
       try {
-        RegExp regex = RegExp(r'(?<=decoration-italic:).*?(?=;)');
-        String value = regex.stringMatch(text)!;
-        return FontStyle.values[int.parse(value)];
+        bool value = text.contains('decoration:italic;');
+        return value == true ? FontStyle.italic : null;
       } catch (e) {
         return null;
       }
@@ -118,30 +124,30 @@ class RichTrexFormat {
 
     // Get Strikethrough from Tag.
     TextDecoration strikeThrough(String text) {
-      RegExp regex = RegExp(r'(?<=decoration-strikethrough:).*?(?=;)');
-      if (text.contains(regex) == true) {
-        return TextDecoration.lineThrough;
-      } else {
+      try {
+        bool value = text.contains('decoration:strikethrough;');
+        return value == true ? TextDecoration.lineThrough : TextDecoration.none;
+      } catch (e) {
         return TextDecoration.none;
       }
     }
 
     // Get Underline from Tag.
     TextDecoration underline(String text) {
-      RegExp regex = RegExp(r'(?<=decoration-underline:).*?(?=;)');
-      if (text.contains(regex) == true) {
-        return TextDecoration.underline;
-      } else {
+      try {
+        bool value = text.contains('decoration:underline;');
+        return value == true ? TextDecoration.underline : TextDecoration.none;
+      } catch (e) {
         return TextDecoration.none;
       }
     }
 
     // Get Overline from Tag.
     TextDecoration overline(String text) {
-      RegExp regex = RegExp(r'(?<=decoration-overline:).*?(?=;)');
-      if (text.contains(regex) == true) {
-        return TextDecoration.overline;
-      } else {
+      try {
+        bool value = text.contains('decoration:overline;');
+        return value == true ? TextDecoration.overline : TextDecoration.none;
+      } catch (e) {
         return TextDecoration.none;
       }
     }
@@ -152,11 +158,12 @@ class RichTrexFormat {
       return TextSpan(
           text: newText(textlist[x]),
           style: style?.copyWith(
+              leadingDistribution: TextLeadingDistribution.even,
               color: color(textlist[x]),
               fontStyle: italic(textlist[x]),
               height: fontHeight(textlist[x]),
               fontSize: fontSize(textlist[x]),
-              shadows: [fontShadow(textlist[x])],
+              shadows: [shadow(textlist[x])],
               fontWeight: fontWeight(textlist[x]),
               fontFamily: fontFamily(textlist[x]),
               letterSpacing: fontSpace(textlist[x]),

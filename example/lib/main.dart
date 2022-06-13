@@ -8,9 +8,9 @@ void main() {
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 
-  final RichTrexController controller = RichTrexController(
-      text:
-          'lorem <style="font-weight:8;">ipsum</style> dolor <style="font-color:0xFFFF1212;">sit</style> amet');
+  final RichTrexController controller =
+      RichTrexController(text: "lorem ipsum dolor sit amet");
+  //'lorem <style="font-weight:8;">ipsum</style> dolor <style="font-color:0xFFFF1212;">sit</style> amet');
 
   @override
   Widget build(BuildContext context) {
