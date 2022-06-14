@@ -2,6 +2,7 @@ name: richtrex
 description: Rich Text Regular Expression, A flutter WYSIWYG rich text editor with no HTML but RegEx.
 version: 1.0.0
 homepage: https://github.com/Nialixus/richtrex
+publish_to: none
 
 environment:
   sdk: ">=2.16.0 <3.0.0"
@@ -10,6 +11,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  richtrex_colorpicker:
+    path: ../richtrex_colorpicker/
 
 dev_dependencies:
   flutter_test:

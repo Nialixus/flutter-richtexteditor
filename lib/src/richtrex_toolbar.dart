@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:richtrex/richtrex.dart';
-import 'package:richtrex/src/addons/richtrex_colorpicker.dart';
+import 'package:richtrex_colorpicker/richtrex_colorpicker.dart';
 
 export 'richtrex_toolbar.dart' hide RichTrexToolbar;
 
@@ -169,7 +169,8 @@ class _RichTrexToolbarState extends State<RichTrexToolbar> {
                 ],
               ),
               InkWell(
-                  onTap: () => const RichTrexColorPicker().open(context),
+                  onTap: () => const RichTrexColorPicker(color: Colors.blue)
+                      .open(context),
                   child: const Icon(Icons.arrow_drop_down_sharp))
             ],
           ),

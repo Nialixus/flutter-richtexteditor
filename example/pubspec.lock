@@ -123,6 +123,13 @@ packages:
       relative: true
     source: path
     version: "1.0.0"
+  richtrex_colorpicker:
+    dependency: transitive
+    description:
+      path: "../../richtrex_colorpicker"
+      relative: true
+    source: path
+    version: "1.0.0"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -185,5 +192,5 @@ packages:
     source: hosted
     version: "2.1.1"
 sdks:
-  dart: ">=2.16.0 <3.0.0"
+  dart: ">=2.16.2 <3.0.0"
   flutter: ">=1.17.0"
