@@ -59,13 +59,13 @@ class RichTrexController extends TextEditingController {
     }
   }
 
-  void onTap({required RichTrexCommand format}) async {
-    if (!format.code.contains("view-source")) {
+  void onTap({required RichTrexCommand command}) async {
+    if (!command.code.contains("view-source")) {
       final TextSelection rawSelection = selection;
       final String newSpace =
-          format.code.contains(RegExp(r'font-height')) ? '\n' : '';
+          command.code.contains(RegExp(r'font-height')) ? '\n' : '';
       final String newText =
-          """$newSpace<style="${format.code}">${text.substring(selectionSource.start, selectionSource.end)}</style>$newSpace""";
+          """$newSpace<style="${command.code}">${text.substring(selectionSource.start, selectionSource.end)}</style>$newSpace""";
       final TextSelection richSelection = TextSelection(
           baseOffset: rawSelection.start, extentOffset: rawSelection.end);
       text = text.replaceRange(

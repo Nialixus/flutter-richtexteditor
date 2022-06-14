@@ -25,11 +25,18 @@ class RichTrex extends StatelessWidget {
     ]);
   }
 
-  static StatelessWidget editor({required RichTrexController controller}) =>
-      RichTrexEditor(controller: controller);
+  static StatelessWidget editor(
+          {Key? key, required RichTrexController controller}) =>
+      RichTrexEditor(key: key, controller: controller);
 
-  static StatefulWidget toolbar({required RichTrexController controller}) =>
-      RichTrexToolbar(controller: controller);
+  static StatefulWidget toolbar({
+    Key? key,
+    required RichTrexController controller,
+  }) =>
+      RichTrexToolbar(
+        key: key,
+        controller: controller,
+      );
 
   static TextSpan decode(String string) => RichTrexFormat().decode(string);
 }

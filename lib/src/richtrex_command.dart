@@ -22,8 +22,8 @@ class RichTrexCommand {
       : this(map: {'background-color': '0x${value.value.toRadixString(16)}'});
 
   /// Executing command to change Boldness of Text.
-  RichTrexCommand.fontWeight({required FontWeight value})
-      : this(map: {'font-weight': '${value.index}'});
+  RichTrexCommand.bold()
+      : this(map: {'font-weight': '${FontWeight.bold.index}'});
 
   /// Executing command to change Text Height.
   RichTrexCommand.fontHeight({required double value})
